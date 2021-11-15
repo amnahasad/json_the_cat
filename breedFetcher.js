@@ -1,11 +1,12 @@
 const request = require('request');
 
-    breedType = process.argv[2];
 
-    request(`https://api.thecatapi.com/v1/breeds/search?q=${breedType}`, (error, res, body) => {
+const fetchBreedDescription = function(breedName, callback) {
+
+    request(`https://api.thecatapi.com/v1/breeds/search?q=${breedName}`, (error, res, body) => {
 
         if (error) {
-            console.log("Error, can't open url", error);
+            callback("Error, can't open url", error);
         }
         const data = JSON.parse(body);
         // console.log(data);
@@ -13,9 +14,12 @@ const request = require('request');
         let breed = data[0];
 
         if (breed) {
-            console.log(breed.description);
+            callback(null, breed.description);
         } else {
-            console.log(`Error, cannot find breed ${breedType}`);
+            callback(`Error, cannot find breed ${breedName}`, null);
         }
       
     });
+};
+
+module.exports = { fetchBreedDescription };
